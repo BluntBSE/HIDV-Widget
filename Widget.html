@@ -1,0 +1,324 @@
+<div>
+  <div id="messages" style="display: none;" data-dojo-attach-point="messages">
+    <p>There was an issue running the tool.  No worries - sometimes this happens.  Try doing one of the following:</p>
+    <ul>
+      <li>1) Check for typos, missing hyphens or trailing spaces</li>
+      <li>2) If you are using X/Y Coordinates, increase the tolerance</li>
+      <li>3) Close and reopen the browser</li>
+    </ul>
+    <p>If you continue to have issues, please submit a Help Desk ticket.</p>
+    <p>Debug Messages:</p>
+    <div id="debugMessages"></div>
+  </div>
+  <h2 style="padding-bottom:3px;">Type of Search:</h2>
+  <div id="searchTypeDiv">
+    <ul id="searchList">
+    <li>
+      <label class="radioContainer">Control Section
+        <input type="radio" name="groupControl" checked value="Control Section" data-dojo-attach-point="ControlSectionRadioBtn" data-dojo-attach-event="onclick:_radioSectionControl">
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    <li>
+      <label class="radioContainer">RouteID
+        <input type="radio" name="groupControl" value="RouteID Section" data-dojo-attach-point="RouteIDSectionRadioBtn" data-dojo-attach-event="onclick:_radioSectionControl">
+        <span class="checkmark"></span>
+      </label>
+    </li>
+    <li>
+      <label class="radioContainer">LRSID
+        <input type="radio" name="groupControl" value="LRSID Section" data-dojo-attach-point="LRSSectionRadioBtn" data-dojo-attach-event="onclick:_radioSectionControl">
+        <span class="checkmark"></span>
+      </label>      
+    </li>
+    <li>
+      <label class="radioContainer">X/Y Coordinates
+        <input type="radio" name="groupControl" value="XY Section" data-dojo-attach-point="XYCoordinateSectionRadioBtn" data-dojo-attach-event="onclick:_radioSectionControl">
+        <span class="checkmark"></span>
+    </label>
+    </li>
+    <li>
+      <label class="radioContainer">Single Point
+        <input type="radio" name="groupControl" value="Single Section" data-dojo-attach-point="SingleSectionRadioBtn" data-dojo-attach-event="onclick:_radioSectionControl">
+        <span class="checkmark"></span>
+    </label>
+    </li>
+  </ul>
+  </div>
+
+  <hr>
+
+  <div data-dojo-attach-point="ControlSectionGroup" class="searchInputs">
+    <table class="searchGroupTable">
+      <tr>
+        <td>
+            <label>Control Section: </label>
+        </td>
+        <td>
+            <input type="text" data-dojo-attach-point="controlSectionNode">
+        </td>
+      </tr>
+    </table>
+   </div>
+ 
+   <div data-dojo-attach-point="LRSGroup" style="display:none" class="searchInputs">
+     <table class="searchGroupTable">
+       <tr>
+         <td>
+            <label>LRSID: </label>
+         </td>
+         <td>
+            <input type="text" data-dojo-attach-point="LRSInputNode">
+         </td>
+       </tr>
+       <tr>
+         <td>
+            <label>Begin Log Mile: </label>
+         </td>
+         <td>
+            <input type="text" data-dojo-attach-point="beginLogMileNode">
+         </td>
+       </tr>
+       <tr>
+         <td>
+            <label>End Log Mile: </label>
+         </td>
+         <td>
+            <input type="text" data-dojo-attach-point="endLogMileNode">
+         </td>
+       </tr>
+     </table>
+   </div>
+ 
+   <div data-dojo-attach-point="RoutesGroup" style="display:none" class="searchInputs">
+    <table class="searchGroupTable">
+      <tr>
+        <td>
+            <label>RouteID: </label>
+        </td>
+        <td>
+            <input type="text" data-dojo-attach-point="RoutesInputNode">
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <label>Begin Measure: </label>
+        </td>
+        <td>
+            <input type="text" data-dojo-attach-point="beginMeasureInputNode">
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <label>End Measure: </label>
+        </td>
+        <td>
+            <input type="text" data-dojo-attach-point="endMeasureInputNode">
+        </td>
+      </tr>
+    </table>     
+   </div>
+ 
+   <div data-dojo-attach-point="XYCoordinateGroup" style="display:none" class="searchInputs">
+     <div style="display:none;">
+       <label>Start Point X: <input type="text" data-dojo-attach-point="startXInputNode"></label>
+     </div>
+     
+     <div style="display:none;">
+       <label>Start Point Y: <input type="text" data-dojo-attach-point="startYInputNode"></label>
+     </div>
+ 
+     <div style="display:none;">
+         <label>End Point X: <input type="text" data-dojo-attach-point="endXInputNode"></label>
+       </div>
+       
+       <div style="display:none;">
+         <label>End Point Y: <input type="text" data-dojo-attach-point="endYInputNode"></label>
+       </div>
+ 
+     <table style="margin: 0 auto; width: 80%; text-align: center;">
+       <tr style="width:100%">
+         <td><input id="startPointBtn" type="button" value="Start Point" class="secbutton jimu-btn" data-dojo-attach-point="startPointBtn"></td>
+         <td><input id="endPointBtn" type="button" value="End Point" class="secbutton jimu-btn" data-dojo-attach-point="endPointBtn"></td>
+       </tr>
+     </table>
+ 
+     <table style="margin: 0 auto; width: 80%; text-align: center;">
+       <tr>
+         <td valign="middle">
+             Tolerance: <input id="toleranceAmount" data-dojo-attach-point="toleranceAmount" type="number" value="10" min="1" max="25" oninput="rangeInput.value=toleranceAmount.value" /> meters<br>
+             <input data-dojo-attach-point="toleranceInputNode" id="rangeInput" type="range" min="1" max="25" onchange="toleranceAmount.value=rangeInput.value" oninput="toleranceAmount.value=rangeInput.value" />
+         </td>
+       </tr>
+       <tr style="width:100%">
+           <td><input type="button" value="Clear XY Points" class="secbutton jimu-btn" data-dojo-attach-point="clearXYBtn"></td>
+       </tr>
+     </table>
+   </div>
+
+
+   <div data-dojo-attach-point="SingleSectionGroup" style="display:none" class="searchInputs">
+    <div style="display:none;">
+      <label>Start Point X: <input type="text" data-dojo-attach-point="startXInputNode"></label>
+    </div>
+    
+    <div style="display:none;">
+      <label>Start Point Y: <input type="text" data-dojo-attach-point="startYInputNode"></label>
+    </div>
+
+    <div style="display:none;">
+        <label>End Point X: <input type="text" data-dojo-attach-point="endXInputNode"></label>
+      </div>
+      
+      <div style="display:none;">
+        <label>End Point Y: <input type="text" data-dojo-attach-point="endYInputNode"></label>
+      </div>
+
+    <table style="margin: 0 auto; width: 80%; text-align: center;">
+      <tr style="width:100%">
+        <td><input id="coordinatePointBtn" type="button" value="Place Coordinate" class="secbutton jimu-btn" data-dojo-attach-point="coordinatePointBtn"></td>
+      </tr>
+    </table>
+
+    <table style="margin: 0 auto; width: 80%; text-align: center;">
+      <tr>
+        <td valign="middle">
+            Tolerance: <input id="toleranceAmount" data-dojo-attach-point="toleranceAmount" type="number" value="10" min="1" max="25" oninput="rangeInput.value=toleranceAmount.value" /> meters<br>
+            <input data-dojo-attach-point="toleranceInputNode" id="rangeInput" type="range" min="1" max="25" onchange="toleranceAmount.value=rangeInput.value" oninput="toleranceAmount.value=rangeInput.value" />
+        </td>
+      </tr>
+      <tr style="width:100%">
+          <td><input type="button" value="Clear Coordinate" class="secbutton jimu-btn" data-dojo-attach-point="clearCoordinateBtn"></td>
+      </tr>
+    </table>
+  </div>
+
+  <hr>
+  
+  <h2 style="padding-bottom:3px;">Characteristics Group</h2>
+  <div data-dojo-attach-point="allCharacteristicsGroup">
+  <ul id="allCharacteristics">
+
+	<li>
+        <label class="checkContainer">All Characteristics
+            <input type="checkbox" id="characteristics_All" onclick="checkAll();">
+            <span class="checkmark2"></span>
+        </label>
+    </li>
+
+  </ul>
+  </div>
+
+  <div data-dojo-attach-point="characteristicsGroup">
+    <ul id="characteristicsList">
+
+    <li>
+      <label class="checkContainer">NHS
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_NHS">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+    
+    <li>
+      <label class="checkContainer">Number of Lanes
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Number_Of_Lanes">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Outside Shoulder Info
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Outside_Shoulder_Info">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Surface Type
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Surface_Type">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Federal Aid
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Federal_Aid">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Functional System
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Functional_System">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Lane Width
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Lane_Width">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">STRAHNET
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_STRAHNET">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Truck Route
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Truck_Route">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Urban Area
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Urban_Area">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Access Control
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Access_Control">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Median
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Median">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+
+    <li>
+      <label class="checkContainer">Right Size
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_Right_Size">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+	
+	<li>
+      <label class="checkContainer">AADT
+          <input type="checkbox" name="characteristics" data-dojo-attach-point="characteristics_AADT">
+          <span class="checkmark2"></span>
+      </label>
+    </li>
+	
+	</ul>
+  </div>
+
+
+  <div style="margin: 0 auto; width: 100%; text-align:center;">
+      <input type="button" value="View Data" class="button jimu-btn" data-dojo-attach-point="GPSubmitNode">
+      <input style="padding-left: 5px;" id="downloadData" onclick="downloadCSV();" type="button" value="Download Data" class="button jimu-btn" data-dojo-attach-point="downloadData" disabled>
+      <br><input style="margin-top: 5px;" id="reset" type="button" value="Reset Widget" class="button jimu-btn" data-dojo-attach-point="reset">
+  </div>
+
+
+</div>
