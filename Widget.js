@@ -699,7 +699,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         // update the start point
         console.log('_updateStartPoint evt: ', evt);
 
-        this.inputStartPointLayer.clear();
+        this.inputStartPointLayer.clear(); //inputStartPointLayer not defined? Should probably be coordinatePointLayer
 
         this.startToolbar.deactivate();
 
@@ -817,7 +817,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         // update the coordinate point 
         console.log('_updatePoint evt: ', evt);
 
-        this.inputPointLayer.clear();
+        //this.inputPointLayer.clear(); //Bug here
 
         //this.startToolbar.deactivate();
 
@@ -826,7 +826,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         this.coordinateXInputNode.value = evt.geographicGeometry.x;
         this.coordinateYInputNode.value = evt.geographicGeometry.y;
 
-        var graphic = new Graphic(evt.geometry, this.startSymbol);
+        var graphic = new Graphic(evt.geometry, this.startSymbol); //Is StartSymbol available?
         this.inputStartPointLayer.add(graphic);
 
         document.getElementById("coordinatePointBtn").className += " secbuttondone";
