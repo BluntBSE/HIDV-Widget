@@ -116,7 +116,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
           5
         );
 
-
         var routeRenderer = new SimpleRenderer(this.routeSymbol);
 
         /*Create Temp Feature Layer for Polylines*/
@@ -294,6 +293,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         this.inputEndPointLayer = new GraphicsLayer({
           id: "routeEndInputPoint"
         });
+
         //Alison added:
         // Symbology for returned points
         var tempoutline = new SimpleLineSymbol(
@@ -542,13 +542,51 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
           }
         });
 
+        this.map.addLayers([this.outputPolylineFeatureLayer, this.inputStartPointLayer, this.inputEndPointLayer]);
+
+        this.startToolbar = new Draw(this.map);
+        this.endToolbar = new Draw(this.map);
+
+        this.startSymbol = new SimpleMarkerSymbol({
+          "color": [0, 255, 0, 80],
+          "size": 12,
+          "angle": -30,
+          "xoffset": 0,
+          "yoffset": 0,
+          "type": "esriSMS",
+          "style": "esriSMSCircle",
+          "outline": {
+            "color": [0, 0, 0, 255],
+            "width": 1,
+            "type": "esriSLS",
+            "style": "esriSLSSolid"
+          }
+        });
+
+        this.endSymbol = new SimpleMarkerSymbol({
+          "color": [255, 0, 0, 80],
+          "size": 12,
+          "angle": -30,
+          "xoffset": 0,
+          "yoffset": 0,
+          "type": "esriSMS",
+          "style": "esriSMSCircle",
+          "outline": {
+            "color": [0, 0, 0, 255],
+            "width": 1,
+            "type": "esriSLS",
+            "style": "esriSLSSolid"
+          }
+        });
+
         on(this.GPSubmitNode, 'click', lang.hitch(this, this._submitToGPService));
 
         on(this.startPointBtn, 'click', lang.hitch(this, this._activateDrawStartPoint));
-        //Alison added:
-        on(this.coordinatePointBtn, 'click', lang.hitch(this, this._activateDrawPoint));
 
         on(this.endPointBtn, 'click', lang.hitch(this, this._activateDrawEndPoint));
+
+        //Alison added:
+        on(this.coordinatePointBtn, 'click', lang.hitch(this, this._activateDrawPoint));
 
         on(this.clearXYBtn, 'click', lang.hitch(this, this._clearDrawPoints));
 
@@ -636,7 +674,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         document.getElementById("endPointBtn").disabled = true;
       },
 
-
       // Update the Start XY Point values and graphic
       _updateStartPoint: function (evt) {
 
@@ -659,7 +696,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         document.getElementById("startPointBtn").classList.remove("secbuttonactive");
         document.getElementById("endPointBtn").disabled = false;
       },
-
 
       // Turn on Draw tool for the XY End Point
       _activateDrawEndPoint: function () {
@@ -737,8 +773,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         }
       },
 
-
-
       //Alison added:
       _activateDrawPoint: function () {
         if (this.pointDrawBoolean == false) {
@@ -780,7 +814,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         document.getElementById("coordinatePointBtn").disabled = true;//Alison edited
       },
       //end Alison added
-
 
       _submitToGPService: function () {
 
@@ -1008,11 +1041,8 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
             "Right_Size_Boolean": this.characteristics_Right_Size.checked,
             "AADT": this.characteristics_AADT.checked
           };
-          //Alison added:
-          //TODO: Does this need to have Point_X or Point_Y handled anywhere in the FME workbench???
-          //
-          //  HELP
-        } if (this.selectedSection == "Coordinate") { // if Coordinate is checked - Using the default values for input Spatial Ref and Tolerance for now
+        }
+        if (this.selectedSection == "Coordinate") { // if Coordinate is checked - Using the default values for input Spatial Ref and Tolerance for now
           var params = {
             "queryMethod_Value": this.selectedSection, //
             "Point_X": coordinatePointValueX,
@@ -1034,6 +1064,8 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
             "AADT": this.characteristics_AADT.checked
           };
         }
+
+
         console.log('params: ', params);
 
         // show the progress indicator
@@ -1055,9 +1087,9 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
             messages.style.display = 'block';
             return;
           } else {
+
             //Alison added:
             //TODO: HOW DO WE MAKE THIS HANDLE points INSTEAD OF lines???!!!??
-
             console.log("getting data");
             gp.getResultData(jobResults.jobId, "Output_Polyline", lang.hitch(this, this.displayGPPolylineResults));
 
@@ -1087,6 +1119,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         //Need a conditional here that evaluates whether the result is poly or point.  Not sure how to do that...
         //maybe result.value.features[0].feature.geometry.type ==  point ### | multipoint | polyline | polygon | extent
         //https://developers.arcgis.com/javascript/3/jsapi/polygon-amd.html#type
+
         console.log('displayGPPolylineResults -- result, messages');
         console.log(result, messages);
         if (result.value.features[0].feature.geometry.type == "point") { //Alison added
@@ -1131,10 +1164,9 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
             PointData.push(features[f].attributes);
           }
         }
-
-        else { //Alison added
+        else {
           // remove any existing graphics if present
-          var oldPolylineGraphicsArray = [];  //var oldPointGraphicsArray = []; outputPointFeatureLayer; 
+          var oldPolylineGraphicsArray = [];
           for (var l = 0; l < this.outputPolylineFeatureLayer.graphics.length; l++) {
             var tempGraphic = this.outputPolylineFeatureLayer.graphics[l];
             oldPolylineGraphicsArray.push(tempGraphic);
@@ -1172,13 +1204,11 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
           geometryService.project(PrjParams, function (response) {
             for (f = 0; f < features.length; f++) {
               var graphic = new Graphic();
-
               if (features[f].type == "point")//Alison added
                 graphic.geometry = new Point(response[f]);//Alison added
               else {//Alison added
                 graphic.geometry = new Polyline(response[f]);
               }
-
               var infoTemplate = new InfoTemplate();
               var content = "<table cellpadding='3'>";
               if (!!features[f].attributes.FID) {
@@ -1206,6 +1236,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
                   content += '<tr><td width="40%"><b>Measure:</b></td><td>' + features[f].attributes.Measure + '</td></tr>';
                 }
               }
+
               if (!!features[f].attributes.RouteName) {
                 if (features[f].attributes.RouteName.length > 0 && features[f].attributes.RouteName.replace(/\s+/g, '') != '') {
                   content += '<tr><td width="40%"><b>Route Name:</b></td><td>' + features[f].attributes.RouteName + '</td></tr>';
@@ -1234,11 +1265,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
               if (!!features[f].attributes.EndLogMile) {
                 if (features[f].attributes.EndLogMile.length > 0 && features[f].attributes.EndLogMile.replace(/\s+/g, '') != '') {
                   content += '<tr><td width="40%"><b>End Log Mile:</b></td><td>' + features[f].attributes.EndLogMile + '</td></tr>';
-                }
-              }
-              if (!!features[f].attributes.LogMile) {
-                if (features[f].attributes.LogMile.length > 0 && features[f].attributes.LogMile.replace(/\s+/g, '') != '') {
-                  content += '<tr><td width="40%"><b>Log Mile:</b></td><td>' + features[f].attributes.LogMile + '</td></tr>';
                 }
               }
               if (!!features[f].attributes.ControlSec) {
@@ -1481,26 +1507,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
                   content += '<tr><td width="40%"><b>UTM Y Start (NAD83-15N):</b></td><td>' + features[f].attributes.UTMYStart_ + '</td></tr>';
                 }
               }
-              if (!!features[f].attributes.UTMX) {
-                if (features[f].attributes.UTMX.length > 0 && features[f].attributes.UTMX.replace(/\s+/g, '') != '') {
-                  content += '<tr><td width="40%"><b>UTM X:</b></td><td>' + features[f].attributes.UTMX + '</td></tr>';
-                }
-              }
-              if (!!features[f].attributes.UTMY) {
-                if (features[f].attributes.UTMY.length > 0 && features[f].attributes.UTMY.replace(/\s+/g, '') != '') {
-                  content += '<tr><td width="40%"><b>UTM Y:</b></td><td>' + features[f].attributes.UTMY + '</td></tr>';
-                }
-              }
-              if (!!features[f].attributes.Latitude) {
-                if (features[f].attributes.Latitude.length > 0 && features[f].attributes.Latitude.replace(/\s+/g, '') != '') {
-                  content += '<tr><td width="40%"><b>Latitude:</b></td><td>' + features[f].attributes.Latitude + '</td></tr>';
-                }
-              }
-              if (!!features[f].attributes.Longitude) {
-                if (features[f].attributes.Longitude.length > 0 && features[f].attributes.Longitude.replace(/\s+/g, '') != '') {
-                  content += '<tr><td width="40%"><b>Longitude:</b></td><td>' + features[f].attributes.Longitude + '</td></tr>';
-                }
-              }
               if (!!features[f].attributes.LatitudeEn) {
                 if (features[f].attributes.LatitudeEn.length > 0 && features[f].attributes.LatitudeEn.replace(/\s+/g, '') != '') {
                   content += '<tr><td width="40%"><b>Latitude End (NAD83):</b></td><td>' + features[f].attributes.LatitudeEn + '</td></tr>';
@@ -1531,7 +1537,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
                   content += '<tr><td width="40%"><b>Object ID:</b></td><td>' + features[f].attributes.OBJECTID + '</td></tr>';
                 }
               }
-              infoTemplate.setTitle("Route " + features[0].type.title());
+              infoTemplate.setTitle("Route Polyline");
               infoTemplate.setContent(content);
               graphic.infoTemplate = infoTemplate;
               graphic.attributes = features[f].attributes;
@@ -1544,6 +1550,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
                 lineGraphicsArray.push(graphic);
               }
             }
+
             setTimeout(function () {
               if (features[f].type == "point") {//Alison added
                 this._widgetManager.activeWidget.outputPointFeatureLayer.applyEdits(pointGraphicsArray, null, null, lang.hitch(this, function () {
@@ -1604,11 +1611,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
                   content += '<tr><td width="40%"><b>To Measure:</b></td><td>' + features[f].attributes.ToMeasure + '</td></tr>';
                 }
               }
-              if (!!features[f].attributes.Measure) {
-                if (features[f].attributes.Measure.length > 0 && features[f].attributes.Measure.replace(/\s+/g, '') != '') {
-                  content += '<tr><td width="40%"><b>Measure:</b></td><td>' + features[f].attributes.Measure + '</td></tr>';
-                }
-              }
               if (!!features[f].attributes.RouteName) {
                 if (features[f].attributes.RouteName.length > 0 && features[f].attributes.RouteName.replace(/\s+/g, '') != '') {
                   content += '<tr><td width="40%"><b>Route Name:</b></td><td>' + features[f].attributes.RouteName + '</td></tr>';
@@ -1637,11 +1639,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
               if (!!features[f].attributes.EndLogMile) {
                 if (features[f].attributes.EndLogMile.length > 0 && features[f].attributes.EndLogMile.replace(/\s+/g, '') != '') {
                   content += '<tr><td width="40%"><b>End Log Mile:</b></td><td>' + features[f].attributes.EndLogMile + '</td></tr>';
-                }
-              }
-              if (!!features[f].attributes.LogMile) {
-                if (features[f].attributes.LogMile.length > 0 && features[f].attributes.LogMile.replace(/\s+/g, '') != '') {
-                  content += '<tr><td width="40%"><b>Log Mile:</b></td><td>' + features[f].attributes.LogMile + '</td></tr>';
                 }
               }
               if (!!features[f].attributes.ControlSec) {
@@ -1915,14 +1912,10 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
                 }
               }
               content += "</table>";
-
-              //Alison edited:
-              infoTemplate.setTitle("Route " + features[0].type.title());
-
+              infoTemplate.setTitle("Route Polyline");
               infoTemplate.setContent(content);
               graphic.geometry = projGeom;
               graphic.attributes = features[f].attributes;
-
               if (features[f].type == "point") {//Alison added
                 graphic.symbol = simplePointSymbol;//Alison added
                 graphic.infoTemplate = infoTemplate;
@@ -1933,41 +1926,37 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
                 graphic.infoTemplate = infoTemplate;
                 lineGraphicsArray.push(graphic);
               }
-            }
             });
-  }
-          //TODO - add conditional
-		  this.outputPolylineFeatureLayer.applyEdits(lineGraphicsArray, null, null, lang.hitch(this, function () {
+          }
+          this.outputPolylineFeatureLayer.applyEdits(lineGraphicsArray, null, null, lang.hitch(this, function () {
 
-    // Zoom to the extent of the routes graphics
-    var graphicsExtent = graphicsUtils.graphicsExtent(lineGraphicsArray);
-    this.map.setExtent(graphicsExtent, true);
-    this.outputPolylineFeatureLayer.fullExtent = graphicsExtent;
+            // Zoom to the extent of the routes graphics
+            var graphicsExtent = graphicsUtils.graphicsExtent(lineGraphicsArray);
+            this.map.setExtent(graphicsExtent, true);
+            this.outputPolylineFeatureLayer.fullExtent = graphicsExtent;
 
-    this.outputPolylineFeatureLayer.visible = true;
-  }), function (err) {
-    console.error('ERROR ...', err);
-  });
-console.log("Lines Edited");
+            this.outputPolylineFeatureLayer.visible = true;
+          }), function (err) {
+            console.error('ERROR ...', err);
+          });
+          console.log("Lines Edited");
 
         }
 
-// clear XY coordinates and graphics
-this.inputStartPointLayer.clear();
-this.inputEndPointLayer.clear();
+        // clear XY coordinates and graphics
+        this.inputStartPointLayer.clear();
+        this.inputEndPointLayer.clear();
 
-this.startXInputNode.value = "";
-this.startYInputNode.value = "";
+        this.startXInputNode.value = "";
+        this.startYInputNode.value = "";
 
-this.endXInputNode.value = "";
-this.endYInputNode.value = "";
-//TODO
-resetPointButtons();
-document.getElementById("downloadData").disabled = false;
+        this.endXInputNode.value = "";
+        this.endYInputNode.value = "";
 
-        
+        resetPointButtons();
+        document.getElementById("downloadData").disabled = false;
       }
-    });     
+    });
   });
 
 
@@ -1978,7 +1967,7 @@ function checkAll() {
     chkBox[i].checked = state;
   }
 }
-//TODO
+
 function resetPointButtons() {
   document.getElementById("startPointBtn").className += " secbutton";
   document.getElementById("endPointBtn").className += " secbutton";
