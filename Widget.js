@@ -297,10 +297,6 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
 
         //Alison added:
         // Symbology for returned points
-        var tempoutline = new SimpleLineSymbol(
-          SimpleLineSymbol.STYLE_SOLID,
-          new Color([255, 255, 255]),
-          1)
 
         this.pointSymbol = new SimpleMarkerSymbol({
           "color": [0, 255, 0, 50],
@@ -588,6 +584,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
 
         //Alison added:
         on(this.coordinatePointBtn, 'click', lang.hitch(this, this._activateDrawPoint));
+        on(this.clearCoordinateBtn, 'click', lang.hitch(this, this._clearDrawPoints));
 
         on(this.clearXYBtn, 'click', lang.hitch(this, this._clearDrawPoints));
 
@@ -699,7 +696,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         // update the start point
         console.log('_updateStartPoint evt: ', evt);
 
-        this.inputStartPointLayer.clear(); //inputStartPointLayer not defined? Should probably be coordinatePointLayer
+        this.inputStartPointLayer.clear(); //This should stay (I think?)
 
         this.startToolbar.deactivate();
 
@@ -761,18 +758,22 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         document.getElementById("startPointBtn").disabled = false;
       },
 
-      // Clear the Start/End Point GraphicsLayer
+      // Clear the Start/End/Regular Point GraphicsLayer
       _clearDrawPoints: function () {
 
         // clear XY coordinates and graphics
         this.inputStartPointLayer.clear();
         this.inputEndPointLayer.clear();
+        this.coordinatePointLayer.clear();
 
         this.startXInputNode.value = "";
         this.startYInputNode.value = "";
 
         this.endXInputNode.value = "";
         this.endYInputNode.value = "";
+
+        this.coordinateXInputNode.value = "";
+        this.coordinateYInputNode.value = "";
 
         resetPointButtons();
       },
@@ -781,6 +782,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         resetPointButtons();
         this.inputStartPointLayer.clear();
         this.inputEndPointLayer.clear();
+        this.coordinatePointLayer.clear();
         document.getElementById("downloadData").disabled = true;
         document.getElementById("debugMessages").innerHTML = "";
         document.getElementById("messages").style.display = "none";
@@ -816,14 +818,17 @@ define(['dojo/_base/declare', 'dojo/_base/lang', "dojo/on",
         console.log("Click registered from _updateDrawPoint") //updateDrawPoint is not being called
         // update the coordinate point 
         console.log('_updatePoint evt: ', evt);
-
-        //this.inputPointLayer.clear(); //Bug here
+        
+        this.coordinatePointLayer.clear(); //Bug here
 
         //this.startToolbar.deactivate();
 
         this.pointDrawBoolean = false;
-
-        this.coordinateXInputNode.value = evt.geographicGeometry.x;
+        console.log("What's going on here?  Is InputNode (for comparables) in some other files?!")
+        this.coordinateXInputNode.value = 0// test
+        this.coordinateYInputNode.value = 0//test
+        console.log("Trying this2!")
+        this.coordinateXInputNode.value = evt.geographicGeometry.x; //also at 878
         this.coordinateYInputNode.value = evt.geographicGeometry.y;
 
         var graphic = new Graphic(evt.geometry, this.startSymbol); //Is StartSymbol available?
